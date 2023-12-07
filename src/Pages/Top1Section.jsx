@@ -1,41 +1,15 @@
 import { useContext } from "react";
-import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
-import TopContainer from "../components/top";
-import styles from "../CssModules/top1.module.css";
-import { Link } from "react-router-dom";
 import { UserData } from "../components/ContextProvider";
-import Recommendations from "../components/Recommendations";
-import OpenSection from "../components/OpenSection";
+import { Link } from "react-router-dom";
 
-function Top1Page({ pageLabel }) {
-  const { tracksData, artistsData } = useContext(UserData);
+import styles from "../CssModules/top1.module.css";
 
+export function Top1Section({ pageLabel }) {
   return (
-    <>
-      {(pageLabel === "track" && tracksData.items.length >= 2) ||
-      (pageLabel === "artist" && artistsData.items.length >= 20 >= 20) ? (
-        <Top1 pageLabel={pageLabel} />
-      ) : (
-        <Recommendations />
-      )}
-    </>
-  );
-}
-
-function Top1({ pageLabel }) {
-  return (
-    <>
-      <OpenSection label={pageLabel} />
-      <Navbar label={pageLabel} />
-      <TopContainer>
-        <div className={styles.top1Section}>
-          <Left label={pageLabel} />
-          <Right label={pageLabel} />
-        </div>
-      </TopContainer>
-      <Footer />
-    </>
+    <div className={styles.top1Section}>
+      <Left label={pageLabel} />
+      <Right label={pageLabel} />
+    </div>
   );
 }
 
@@ -48,7 +22,7 @@ function Left({ label }) {
         src={
           label === "track"
             ? tracksData.items[0].album.images[0].url
-            : artistsData.items[0].url
+            : artistsData.items[0].images[0].url
         }
       />
     </div>
@@ -60,19 +34,28 @@ function Right({ label }) {
   const info =
     label === "track"
       ? tracksData.items[0].artists[0].name
-      : artistsData.items[0].genres.slice(0, 2);
+      : artistsData.items[0].genres.slice(0, 2).join(", ");
+
   return (
     <div className={styles.topRight}>
       <LinkToSongOrArtist label={label} />
 
       {label === "track" ? (
         <>
-          <FromAlbum />
-          <ByArtist label={"by"} info={info} />
+          <FromDiv />
+          <ByOrGenresDiv>
+            <p className={`${styles.infoHead}`}>By</p>
+            <h1 className={`${styles.infoDetail} `}>{info}</h1>
+          </ByOrGenresDiv>
         </>
-      ) : (
-        <ByArtist label={"genres"} info={info} />
-      )}
+      ) : null}
+
+      {label === "artist" ? (
+        <ByOrGenresDiv label={"genres"} info={info}>
+          <p className={`${styles.infoHead}`}>Genres</p>
+          <h1 className={`${styles.infoDetail} `}>{info}</h1>
+        </ByOrGenresDiv>
+      ) : null}
 
       <SeeMore label={label} />
     </div>
@@ -81,6 +64,7 @@ function Right({ label }) {
 
 function LinkToSongOrArtist({ label }) {
   const { tracksData, artistsData } = useContext(UserData);
+
   return (
     <div className={`${styles.trackInfo} ${styles.top1Main}`}>
       <p className={styles.infoHead}>
@@ -94,11 +78,13 @@ function LinkToSongOrArtist({ label }) {
           href={
             label === "track"
               ? tracksData.items[0].external_urls.spotify
-              : artistsData[0].external_urls.spotify
+              : artistsData.items[0].external_urls.spotify
           }
         >
           <span className={styles.infoTopNameInner}>
-            {label === "track" ? tracksData.items[0].name : artistsData[0].name}
+            {label === "track"
+              ? tracksData.items[0].name
+              : artistsData.items[0].name}
           </span>
           <i className={`fa-brands fa-spotify ${styles.spotifyIcon}`}></i>
         </a>
@@ -107,7 +93,7 @@ function LinkToSongOrArtist({ label }) {
   );
 }
 
-function FromAlbum() {
+function FromDiv() {
   const { tracksData } = useContext(UserData);
   return (
     <div className={`${styles.trackInfo} `}>
@@ -119,13 +105,8 @@ function FromAlbum() {
   );
 }
 
-function ByArtist({ label, info }) {
-  return (
-    <div className={`${styles.trackInfo} `}>
-      <p className={`${styles.infoHead}`}>{label}</p>
-      <h1 className={`${styles.infoDetail} `}>{info}</h1>
-    </div>
-  );
+function ByOrGenresDiv({ children }) {
+  return <div className={`${styles.trackInfo} `}>{children}</div>;
 }
 
 function SeeMore({ label }) {
@@ -135,4 +116,3 @@ function SeeMore({ label }) {
     </Link>
   );
 }
-export default Top1Page;

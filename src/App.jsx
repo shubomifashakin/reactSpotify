@@ -10,7 +10,8 @@ import PageNotFound from "./Pages/PageNotFound";
 
 const LandingPage = lazy(() => import("./Pages/LandingPage"));
 const LoginPage = lazy(() => import("./Pages/Login"));
-const Top1Page = lazy(() => import("./Pages/Top1"));
+const TopPage = lazy(() => import("./Pages/TopPage"));
+const Top20Section = lazy(() => import("./Pages/Top20Section"));
 
 export default function App() {
   return (
@@ -33,7 +34,7 @@ export default function App() {
                 path="tracks"
                 element={
                   <ProtectedRoute>
-                    <Top1Page pageLabel={"track"} />
+                    <TopPage pageLabel={"track"} />
                   </ProtectedRoute>
                 }
               >
@@ -41,7 +42,7 @@ export default function App() {
                   path="all"
                   element={
                     <ProtectedRoute>
-                      <p>Hello</p>
+                      <Top20Section />
                     </ProtectedRoute>
                   }
                 />
@@ -51,7 +52,7 @@ export default function App() {
                 path="artists"
                 element={
                   <ProtectedRoute>
-                    <Top1Page pageLabel={"artist"} />
+                    <TopPage pageLabel={"artist"} />
                   </ProtectedRoute>
                 }
               >

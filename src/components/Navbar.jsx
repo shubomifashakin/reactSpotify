@@ -24,13 +24,16 @@ function Item({ label }) {
   return (
     <div className={`${styles.navLeft} nav-left-${label}`}>
       <span className={styles.navItem}>
-        <Link to={"/tracks"} className={`${styles.navLink} nav-left-link`}>
+        <Link
+          to={label === "track" ? "/tracks" : "/artists"}
+          className={`${styles.navLink} nav-left-link`}
+        >
           {label === "track" ? "Top Tracks" : "Top Artists"}
         </Link>
 
         <div className={styles.dropdown}>
           <Link
-            to={`/artists`}
+            to={label === "track" ? "/artists" : "/tracks"}
             className={`${styles.dropdownLink} nav-left-link`}
           >
             {label === "track" ? "Top Artist" : "Top Tracks"}

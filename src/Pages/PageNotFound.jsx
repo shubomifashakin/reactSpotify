@@ -1,7 +1,9 @@
 import { useEffect, useRef } from "react";
-import styles from "../CssModules/PageNotFound.module.css";
-import gsap from "gsap";
 import { Link } from "react-router-dom";
+
+import styles from "../CssModules/PageNotFound.module.css";
+
+import gsap from "gsap";
 
 function PageNotFound() {
   const div1Ref = useRef(null);
@@ -15,8 +17,8 @@ function PageNotFound() {
   const timeLine = gsap.timeline({
     repeat: -1,
     defaults: {
-      duration: 0.75,
-      ease: "bounce.inOut",
+      duration: 1,
+      ease: "elastic.inOut",
     },
   });
 
@@ -89,7 +91,8 @@ function PageNotFound() {
         <div ref={div1Ref} className={styles.div1}></div>
         <div ref={div2Ref} className={styles.div2}></div>
         <div className={styles.innerDiv} ref={innnerDivRef}>
-          Page Not Found!
+          <p> Page Not Found!</p>
+          <p>Click to Go Back</p>
         </div>
       </Link>
     </section>

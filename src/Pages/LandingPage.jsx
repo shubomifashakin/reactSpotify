@@ -1,18 +1,20 @@
+import { useContext, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import styles from "../CssModules/landingpage.module.css";
-import { clientId } from "../Helpers/_helpers";
+
 import * as HELPERS from "../Helpers/_helpers";
 import { useToken } from "../Helpers/_auth";
+
 import Spinner from "../components/Spinner";
-import { useContext, useEffect, useRef } from "react";
 import { UserData } from "../components/ContextProvider";
 import Error from "../components/Error";
+
+import styles from "../CssModules/landingpage.module.css";
 
 import gsap from "gsap";
 
 function LandingPage() {
   //fetches the token
-  useToken(clientId, HELPERS.code);
+  useToken(HELPERS.clientId, HELPERS.code);
 
   //receive the profile data from the context
   const {
