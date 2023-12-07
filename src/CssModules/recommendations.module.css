@@ -1,0 +1,100 @@
+.errorSection {
+  width: 50%;
+  text-align: center;
+  box-sizing: border-box;
+
+  .errorMessage {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+  }
+
+  .errorRecommendations {
+    height: 15rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    padding: 0 0.5rem;
+
+    .recommendationsHeader {
+      color: var(--hover-color);
+      font-size: 1.25rem;
+      height: 15%;
+    }
+
+    .innerRecommendations {
+      height: 82%;
+      width: 100%;
+      box-sizing: border-box;
+
+      .recommendations {
+        height: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        display: flex;
+        justify-content: flex-start;
+
+        scrollbar-color: var(--primary-color) #000;
+        scrollbar-width: thin;
+
+        &::-webkit-scrollbar {
+          height: 0.25rem;
+          box-sizing: border-box;
+          background: var(--hover-color);
+        }
+
+        &::-webkit-scrollbar-track {
+          height: 20px !important;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background-color: var(--dim-hover-color);
+          /* // border-radius: 5px; */
+          width: 1px;
+        }
+
+        .recImageLink {
+          height: 100%;
+          object-fit: cover;
+          margin-right: 0.5rem;
+
+          .recommendationsImage {
+            height: 100%;
+            object-fit: cover;
+            transition: linear 0.3s;
+          }
+        }
+      }
+    }
+  }
+
+  > .errorReturn {
+    font-size: 0.75rem;
+    text-align: center;
+    color: var(--dim-primary-color) !important;
+    transition: linear 0.3s;
+
+    &:hover {
+      color: #c5c4c4;
+    }
+  }
+}
+
+@media only screen and (max-width: 650px) {
+  .errorSection {
+    width: 100% !important;
+
+    .errorMessage {
+      font-size: 0.85rem !important;
+    }
+
+    .errorRecommendations {
+      .recommendationsHeader {
+        font-size: 1rem !important;
+      }
+    }
+  }
+}

@@ -1,0 +1,129 @@
+.top1Section {
+  display: flex;
+  height: 100%;
+  /* // border: solid 1px red; */
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1rem 2rem;
+  box-sizing: border-box;
+  opacity: 1;
+
+  & > * {
+    flex-basis: 50%;
+    /* // border: solid 1px blue; */
+  }
+
+  .topLeft {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    border-radius: 15px;
+    overflow: hidden;
+  }
+
+  .topLeft img {
+    object-fit: contain;
+    height: 100%;
+    width: 100%;
+  }
+
+  .topRight {
+    padding: 1rem 2rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+
+    .trackInfo {
+      flex-basis: 25%;
+
+      .infoHead {
+        text-transform: capitalize;
+        font-size: 1rem;
+        color: var(--dim-primary-color) !important;
+      }
+
+      .infoDetail {
+        color: var(--primary-color);
+        font-size: 3rem;
+        transition: linear 0.3s;
+
+        > * {
+          font-size: inherit !important;
+          color: inherit !important;
+          text-decoration: none;
+
+          > span {
+            font-size: inherit;
+            color: inherit !important;
+          }
+
+          > i {
+            color: #191414 !important;
+            font-size: inherit;
+          }
+        }
+      }
+
+      .infoTopName {
+        text-decoration: underline;
+        display: inline-block;
+      }
+
+      .infoTopName:hover {
+        color: var(--hover-color);
+      }
+    }
+
+    .seeMore {
+      font-size: 0.85rem;
+      color: var(--primary-color);
+      width: fit-content;
+      transition: linear 0.3s;
+      display: block;
+      text-transform: capitalize;
+      /* // border: solid 1px red; */
+      &:hover {
+        color: var(--dim-primary-color) !important;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 650px) {
+  .top1Section {
+    flex-direction: column !important;
+    padding: 1rem 1rem !important;
+
+    .topRight {
+      padding: 1rem 0 !important;
+
+      .trackInfo {
+        .infoHead {
+          font-size: 0.85rem !important;
+
+          & > * {
+            font-size: inherit !important;
+          }
+        }
+
+        .infoDetail {
+          font-size: 1.25rem !important;
+
+          & > * {
+            font-size: inherit !important;
+            color: inherit !important;
+
+            > span {
+              font-size: inherit;
+              color: inherit !important;
+            }
+
+            > i {
+              color: #191414 !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}

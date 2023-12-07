@@ -1,0 +1,60 @@
+.appFooter {
+  display: flex;
+  height: 10%;
+  width: 100%;
+  opacity: 1;
+  justify-content: center;
+  align-items: center;
+  padding: 0 2rem;
+  box-sizing: border-box;
+  z-index: 50;
+  color: var(--hover-color);
+
+  .footerText {
+    font-size: 1rem;
+    color: var(--hover-color);
+  }
+
+  .footerRight {
+    display: flex;
+    align-items: center;
+
+    .currently {
+      font-size: 1rem;
+      /* //change when ready to implement currently playing */
+      display: none;
+    }
+  }
+}
+
+@media only screen and (max-width: 650px) {
+  .appFooter {
+    padding: 0 1rem !important;
+
+    .footerText {
+      font-size: 0.85rem !important;
+    }
+
+    .currently {
+      font-size: 0.85rem !important;
+    }
+  }
+}
+
+@media only screen and (min-width: 1600px) and (min-height: 900px) {
+  .appFooter {
+    .footerText,
+    .currently {
+      font-size: 1.25rem !important;
+    }
+  }
+}
+
+@media only screen and (min-width: 2000px) and (min-height: 1300px) {
+  .appFooter {
+    .footerText,
+    .currently {
+      font-size: 1.5rem !important;
+    }
+  }
+}
