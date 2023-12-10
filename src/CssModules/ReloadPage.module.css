@@ -1,0 +1,18 @@
+.backToLogin {
+  text-align: center;
+
+  .header {
+    font-size: 1rem;
+    color: var(--hover-color);
+    text-transform: capitalize;
+  }
+
+  .logInLink {
+    color: var(--primary-color);
+    text-decoration: underline;
+
+    &:hover {
+      color: var(--dim-primary-color);
+    }
+  }
+}

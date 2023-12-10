@@ -62,8 +62,6 @@ async function generateCodeChallenge(codeVerifier) {
 }
 
 export function useToken(clientId, code) {
-  //gets the verifier from the local storage
-  const verifier = localStorage.getItem("verifier");
   //gets the token state and dispatch
   const { token, dispatch } = useContext(UserData);
 
@@ -71,17 +69,7 @@ export function useToken(clientId, code) {
 
   useEffect(
     function () {
-      //set the search params we are sending
-      setSearchParams((prev) => ({
-        ...prev,
-        client_id: clientId,
-        grant_type: "authorization_code",
-        code: code,
-        code_verifier: verifier,
-        redirect_uri: "http://localhost:5173/",
-      }));
-
-      async function getData() {
+      async function getToken() {
         try {
           //when dispatched, the landing page would re-render and start showing the spinner component
           dispatch({ label: "isLoading" });
@@ -107,15 +95,15 @@ export function useToken(clientId, code) {
           dispatch({ label: "gotToken", payLoad: access_token });
         } catch (err) {
           //send the error to the error to the state and show the error section in landing page
-          dispatch({ label: "isError", payLoad: err.message });
+          dispatch({ label: "tokenError", payLoad: err.message });
         }
       }
 
       //only run the effect if there is no token
       if (!token) {
-        getData();
+        getToken();
       }
     },
-    [clientId, searchParams, code, verifier, setSearchParams, dispatch, token]
+    [searchParams, setSearchParams, dispatch, token]
   );
 }

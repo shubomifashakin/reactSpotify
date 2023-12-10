@@ -6,11 +6,12 @@
   font-size: 16px;
   font-family: "Poppins", monospace;
   box-sizing: border-box;
+  text-decoration: none;
   --bg-color: #000;
   --hover-color: #baff29;
   --dim-hover-color: #bbff29;
   --primary-color: #fff;
-  --dim-primary-color: #d6d6d6;
+  --dim-primary-color: #c5c3c3;
   --top-item-color: #000;
 }
 
@@ -61,6 +62,21 @@ body {
 
     & > * {
       color: #000;
+    }
+  }
+}
+
+@media only screen and (max-width: 200px) {
+  .btn-1 {
+    padding: 0.325rem 1rem;
+    font-size: 0.75rem;
+    border-radius: 7.5px;
+
+    & > * {
+      color: inherit;
+      transition: linear 0.3s;
+      margin-left: 0.5rem;
+      font-size: inherit;
     }
   }
 }

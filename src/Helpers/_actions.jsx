@@ -1,4 +1,4 @@
-import { timer } from "./_helpers";
+import * as HELPERS from "./_helpers";
 
 export async function similarArtists(token, id) {
   try {
@@ -88,5 +88,86 @@ export async function similarSongs(token, trackId) {
   } catch (err) {
     console.log(err);
     throw err;
+  }
+}
+
+export async function getData(token, dispatch) {
+  try {
+    const [profile, tracks, artists] = await Promise.all([
+      fetch("https://api.spotify.com/v1/me", {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      fetch(
+        `https://api.spotify.com/v1/me/top/tracks?time_range=${HELPERS.timeFrame}&limit=${HELPERS.dataLimit}&offset=0`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ),
+      fetch(
+        `https://api.spotify.com/v1/me/top/artists?time_range=${HELPERS.timeFrame}&limit=${HELPERS.dataLimit}&offset=0`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ),
+    ]);
+
+    if (!profile.ok) {
+      throw new Error(`An error occurred, please ${profile.status}`);
+    }
+    if (!tracks.ok) {
+      throw new Error(`An error occurred, please ${tracks.status}`);
+    }
+    if (!artists.ok) {
+      throw new Error(`An error occurred, please ${artists.status}`);
+    }
+
+    const profileData = await profile.json();
+    const tracksData = await tracks.json();
+    const artistsData = await artists.json();
+
+    //send the data fetched to the context
+    dispatch({
+      label: "fetchedUserData",
+      payLoad: { artistsData, tracksData, profileData },
+    });
+  } catch (err) {
+    dispatch({ label: "dataError", payLoad: err.message });
+  }
+}
+
+export async function getToken(dispatch, searchParams) {
+  try {
+    //when dispatched, the landing page would re-render and start showing the spinner component
+    dispatch({ label: "isLoading" });
+    //send the data to the api
+    const result = await Promise.race([
+      fetch("https://accounts.spotify.com/api/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: searchParams,
+      }),
+      HELPERS.timer(),
+    ]);
+
+    //if there is an error short circuit
+    if (!result.ok) {
+      throw new Error(`An error occurred ${result.status} token`);
+    }
+
+    //the access token is returned from the api
+    const { access_token } = await result.json();
+
+    //send the token to the context provider state
+    dispatch({ label: "gotToken", payLoad: access_token });
+  } catch (err) {
+    //send the error to the error to the state and show the error section in landing page
+    dispatch({ label: "tokenError", payLoad: err.message });
   }
 }

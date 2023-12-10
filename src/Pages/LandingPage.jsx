@@ -1,21 +1,15 @@
 import { useContext, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-
-import * as HELPERS from "../Helpers/_helpers";
-import { useToken } from "../Helpers/_auth";
+import { Link, useSearchParams } from "react-router-dom";
 
 import Spinner from "../components/Spinner";
 import { UserData } from "../components/ContextProvider";
-import Error from "../components/Error";
-
 import styles from "../CssModules/landingpage.module.css";
+import { getData, getToken } from "../Helpers/_actions";
 
 import gsap from "gsap";
+import BackToLogIn from "../components/ReloadPage";
 
 function LandingPage() {
-  //fetches the token
-  useToken(HELPERS.clientId, HELPERS.code);
-
   //receive the profile data from the context
   const {
     token,
@@ -26,63 +20,26 @@ function LandingPage() {
     error: dataError,
   } = useContext(UserData);
 
+  //receive the params to be sent from the url
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  //fetch the token
+  useEffect(
+    function () {
+      //only run the effect if there is no token
+      if (!token) {
+        getToken(dispatch, searchParams);
+      }
+    },
+    [searchParams, dispatch, token]
+  );
+
   //fetch the user profile, top tracks and artists
   useEffect(
     function () {
-      async function getData() {
-        try {
-          const [profile, tracks, artists] = await Promise.all([
-            fetch("https://api.spotify.com/v1/me", {
-              method: "GET",
-              headers: { Authorization: `Bearer ${token}` },
-            }),
-            fetch(
-              `https://api.spotify.com/v1/me/top/tracks?time_range=${HELPERS.timeFrame}&limit=${HELPERS.dataLimit}&offset=0`,
-              {
-                method: "GET",
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            ),
-            fetch(
-              `https://api.spotify.com/v1/me/top/artists?time_range=${HELPERS.timeFrame}&limit=${HELPERS.dataLimit}&offset=0`,
-              {
-                method: "GET",
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            ),
-          ]);
-
-          if (!profile.ok) {
-            throw new Error(`An error occurred, please ${profile.status}`);
-          }
-          if (!tracks.ok) {
-            throw new Error(`An error occurred, please ${tracks.status}`);
-          }
-          if (!artists.ok) {
-            throw new Error(`An error occurred, please ${artists.status}`);
-          }
-
-          const profileData = await profile.json();
-          const tracksData = await tracks.json();
-          const artistsData = await artists.json();
-
-          //send the data fetched to the context
-          dispatch({
-            label: "fetchedUserData",
-            payLoad: { artistsData, tracksData, profileData },
-          });
-        } catch (err) {
-          dispatch({ label: "dataError", payLoad: err.message });
-        }
-      }
-
       //only run the effect if there is a token
       if (token) {
-        getData();
+        getData(token, dispatch);
       }
     },
     [token, dispatch]
@@ -90,13 +47,19 @@ function LandingPage() {
 
   return (
     <>
+      {/* if it is loading */}
       {loading && !token ? <Spinner /> : null}
-      {token && !loading && !tokenError && !dataError ? (
+      {token && tokenError ? <Page profile={profileData} /> : null}
+
+      {/* there is a token and no error */}
+      {token && !dataError && !tokenError ? (
         <Page profile={profileData} />
       ) : null}
 
       {/*if there is an error from the token fetch or data fetch */}
-      {tokenError || dataError ? <p>Error {tokenError || dataError}</p> : null}
+      {(tokenError && !token) || dataError ? (
+        <BackToLogIn error={tokenError || dataError} />
+      ) : null}
     </>
   );
 }

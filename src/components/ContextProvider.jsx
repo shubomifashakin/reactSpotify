@@ -32,8 +32,15 @@ function reducer(state, { label, payLoad }) {
   if (label === "isLoading") return { ...state, loading: true };
 
   if (label === "gotToken")
-    return { ...state, loading: false, token: payLoad, error: "" };
-  if (label === "isError") return { ...state, loading: false, error: payLoad };
+    return {
+      ...state,
+      loading: false,
+      token: payLoad,
+      error: "",
+      tokenError: "",
+    };
+  if (label === "tokenError")
+    return { ...state, loading: false, tokenError: payLoad };
 }
 
 function ContextProvider({ children }) {

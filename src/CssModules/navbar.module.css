@@ -77,3 +77,15 @@
     display: flex !important;
   }
 }
+
+@media only screen and (max-width: 650px) {
+  .navbar {
+    padding: 0 1rem !important;
+
+    .nav-item {
+      & > * {
+        font-size: 0.85rem !important;
+      }
+    }
+  }
+}

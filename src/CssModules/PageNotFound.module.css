@@ -7,6 +7,11 @@
   align-items: center;
   justify-content: center;
 
+  .animContainer {
+    height: 50%;
+    width: 50%;
+  }
+
   > a {
     position: relative;
     display: block;

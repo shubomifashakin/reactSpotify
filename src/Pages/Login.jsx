@@ -20,8 +20,11 @@ function Login() {
     //if the user was authorized when redirected, go to the intro page
     function () {
       if (code) {
+        const verifier = localStorage.getItem("verifier");
         dispatch({ label: "loggedIn" });
-        navigate(`landing?code=${code}`);
+        navigate(
+          `landing?code=${code}&client_id=${HELPERS.clientId}&grant_type=authorization_code&redirect_uri=http://localhost:5173/&code_verifier=${verifier}`
+        );
       }
     },
     [code, navigate, dispatch]
