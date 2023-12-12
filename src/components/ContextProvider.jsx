@@ -7,7 +7,7 @@ const initialState = {
   profileData: {},
   artistsData: {},
   error: "",
-  loggedIn: false,
+  authorized: false,
   token: "",
   loading: false,
   tokenError: "",
@@ -17,17 +17,18 @@ function reducer(state, { label, payLoad }) {
   if (label === "fetchedUserData") {
     return {
       ...state,
+      loading: false,
       tracksData: payLoad.tracksData,
       artistsData: payLoad.artistsData,
       profileData: payLoad.profileData,
     };
   }
   if (label === "dataError") {
-    return { ...state, error: payLoad };
+    return { ...state, error: payLoad, loading: false };
   }
   if (label === "logOut") return initialState;
 
-  if (label === "loggedIn") return { ...state, loggedIn: true };
+  if (label === "authorized") return { ...state, authorized: true };
 
   if (label === "isLoading") return { ...state, loading: true };
 
@@ -50,7 +51,7 @@ function ContextProvider({ children }) {
       profileData,
       artistsData,
       error,
-      loggedIn,
+      authorized,
       token,
       tokenError,
       loading,
@@ -66,7 +67,7 @@ function ContextProvider({ children }) {
         artistsData,
         dispatch,
         error,
-        loggedIn,
+        authorized,
         token,
         tokenError,
         loading,

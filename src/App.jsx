@@ -1,17 +1,19 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import ContextProvider from "./components/ContextProvider";
-
-import styles from "./CssModules/App.module.css";
 
 import { Suspense, lazy } from "react";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Spinner from "./components/Spinner";
-import PageNotFound from "./Pages/PageNotFound";
+import { Spinner } from "./components/Spinner";
 
+import styles from "./CssModules/App.module.css";
+import { Top1Page } from "./Pages/Top1Page";
+import { Top20Page } from "./Pages/Top20Page";
+import { TopPage } from "./Pages/TopPage";
+
+//pages are only imported when they are needed
 const LandingPage = lazy(() => import("./Pages/LandingPage"));
 const LoginPage = lazy(() => import("./Pages/Login"));
-const TopPage = lazy(() => import("./Pages/TopPage"));
-const Top20Section = lazy(() => import("./Pages/Top20Section"));
+const PageNotFound = lazy(() => import("./Pages/PageNotFound"));
 
 export default function App() {
   return (
@@ -30,37 +32,61 @@ export default function App() {
                   </ProtectedRoute>
                 }
               />
+
               <Route
-                path="tracks"
+                path="tracksData"
                 element={
                   <ProtectedRoute>
-                    <TopPage pageLabel={"track"} />
+                    <TopPage label={"track"} />
                   </ProtectedRoute>
                 }
               >
+                {/*immmediately the user goes to the tracksData page, redirect to the topTrack route */}
+                <Route index element={<Navigate replace to="topTrack" />} />
+
                 <Route
-                  path="all"
+                  path="topTrack"
                   element={
                     <ProtectedRoute>
-                      <Top20Section />
+                      <Top1Page label={"track"} />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="allTracks"
+                  element={
+                    <ProtectedRoute>
+                      <Top20Page label={"track"} />
                     </ProtectedRoute>
                   }
                 />
               </Route>
 
               <Route
-                path="artists"
+                path="artistsData"
                 element={
                   <ProtectedRoute>
-                    <TopPage pageLabel={"artist"} />
+                    <TopPage label={"artist"} />
                   </ProtectedRoute>
                 }
               >
+                {/*immmediately the user goes to the artistsData page, redirect to the topArtist page */}
+                <Route index element={<Navigate replace to="topArtists" />} />
+
                 <Route
-                  path="all"
+                  path="topArtists"
                   element={
                     <ProtectedRoute>
-                      <p>Hello</p>
+                      <Top1Page label={"artist"} />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="allArtists"
+                  element={
+                    <ProtectedRoute>
+                      <Top20Page label={"artist"} />
                     </ProtectedRoute>
                   }
                 />

@@ -3,13 +3,20 @@ import { UserData } from "../components/ContextProvider";
 import { Link } from "react-router-dom";
 
 import styles from "../CssModules/top1.module.css";
+import { TopPageLayout } from "../components/TopPageLayout";
+import { OpenSection } from "../components/OpenSection";
 
-export function Top1Section({ pageLabel }) {
+export function Top1Page({ label }) {
   return (
-    <div className={styles.top1Section}>
-      <Left label={pageLabel} />
-      <Right label={pageLabel} />
-    </div>
+    <>
+      <OpenSection label={label} />
+      <TopPageLayout label={label}>
+        <div className={styles.top1Section}>
+          <Left label={label} />
+          <Right label={label} />
+        </div>
+      </TopPageLayout>
+    </>
   );
 }
 
@@ -111,7 +118,10 @@ function ByOrGenresDiv({ children }) {
 
 function SeeMore({ label }) {
   return (
-    <Link to={"all"} className={`${styles.seeMore} see-more-${label}s`}>
+    <Link
+      to={`../all${label}s`}
+      className={`${styles.seeMore} see-more-${label}s`}
+    >
       See More {String(label).toLowerCase()}s
     </Link>
   );

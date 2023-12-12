@@ -1,7 +1,5 @@
 import styles from "../CssModules/spinner.module.css";
 
-function Spinner() {
+export function Spinner() {
   return <div className={styles.spinner}></div>;
 }
-
-export default Spinner;

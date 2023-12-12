@@ -1,41 +1,24 @@
 import { useContext } from "react";
+import { Outlet } from "react-router-dom";
 
-import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
-import TopContainer from "../components/top";
-import OpenSection from "../components/OpenSection";
 import { UserData } from "../components/ContextProvider";
 import Recommendations from "../components/Recommendations";
 
-import { Top1Section } from "./Top1Section";
-
-function TopPage({ pageLabel }) {
+export function TopPage({ label }) {
   const { tracksData, artistsData } = useContext(UserData);
 
   return (
     <>
-      {(pageLabel === "track" && tracksData.items.length >= 20) ||
-      (pageLabel === "artist" && artistsData.items.length >= 20) ? (
-        <Top pageLabel={pageLabel} />
+      {/* if there are 20 0r more tracks/artists when the user comes to this page show them the info */}
+      {/* if there aren't show the recommendations page */}
+      {(label === "track" && tracksData.items.length >= 20) ||
+      (label === "artist" && artistsData.items.length >= 20) ? (
+        <>
+          <Outlet />
+        </>
       ) : (
         <Recommendations />
       )}
     </>
   );
 }
-
-function Top({ pageLabel }) {
-  return (
-    <>
-      <OpenSection label={pageLabel} />
-      <Navbar label={pageLabel} />
-      <TopContainer>
-        <Top1Section pageLabel={pageLabel} />
-        {/**put the outlet here */}
-      </TopContainer>
-      <Footer />
-    </>
-  );
-}
-
-export default TopPage;

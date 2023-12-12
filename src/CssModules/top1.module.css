@@ -80,6 +80,7 @@
       width: fit-content;
       transition: linear 0.3s;
       display: block;
+      text-decoration: underline;
       text-transform: capitalize;
       /* // border: solid 1px red; */
       &:hover {

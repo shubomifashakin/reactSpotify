@@ -71,14 +71,15 @@
     }
   }
 
-  > .errorReturn {
+  .errorReturn {
     font-size: 0.75rem;
     text-align: center;
-    color: var(--dim-primary-color) !important;
+    color: var(--primary-color) !important;
     transition: linear 0.3s;
+    text-decoration: underline;
 
     &:hover {
-      color: #c5c4c4;
+      color: var(--dim-hover-color) !important;
     }
   }
 }

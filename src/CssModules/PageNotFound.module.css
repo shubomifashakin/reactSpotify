@@ -4,12 +4,13 @@
   background-color: #000;
   position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 
   .animContainer {
-    height: 50%;
-    width: 50%;
+    height: 60%;
+    width: 70%;
   }
 
   > a {
@@ -72,6 +73,18 @@
     > p:nth-child(2) {
       font-size: 0.5rem;
       color: var(--dim-primary-color);
+    }
+  }
+
+  .logInLink {
+    color: var(--primary-color);
+    z-index: 100;
+    text-decoration: underline;
+    font-size: 0.75rem;
+    transition: linear 0.3s;
+
+    &:hover {
+      color: var(--dim-hover-color);
     }
   }
 }

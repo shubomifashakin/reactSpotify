@@ -3,13 +3,13 @@ import { UserData } from "./ContextProvider";
 import { useNavigate } from "react-router-dom";
 
 function ProtectedRoute({ children }) {
-  const { loggedIn } = useContext(UserData);
+  const { authorized } = useContext(UserData);
   const navigate = useNavigate();
   useEffect(function () {
-    if (!loggedIn) navigate("/");
+    if (!authorized) navigate("/");
   });
 
-  return loggedIn ? children : null;
+  return authorized ? children : null;
 }
 
 export default ProtectedRoute;

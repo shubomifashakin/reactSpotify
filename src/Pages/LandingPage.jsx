@@ -1,13 +1,14 @@
 import { useContext, useEffect, useRef } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
-import Spinner from "../components/Spinner";
+import { getToken, getProfileTopTracksAndArtists } from "../Helpers/_actions";
+
+import { Spinner } from "../components/Spinner";
 import { UserData } from "../components/ContextProvider";
-import styles from "../CssModules/landingpage.module.css";
-import { getData, getToken } from "../Helpers/_actions";
+import { BackToLogIn } from "../components/BackToLogInPage";
 
+import styles from "../CssModules/landingpage.module.css";
 import gsap from "gsap";
-import BackToLogIn from "../components/ReloadPage";
 
 function LandingPage() {
   //receive the profile data from the context
@@ -20,10 +21,10 @@ function LandingPage() {
     error: dataError,
   } = useContext(UserData);
 
-  //receive the params to be sent from the url
+  //gets the params needed to be sent from the url
   const [searchParams, setSearchParams] = useSearchParams();
 
-  //fetch the token
+  //fetches the token if we do not have a token
   useEffect(
     function () {
       //only run the effect if there is no token
@@ -34,12 +35,12 @@ function LandingPage() {
     [searchParams, dispatch, token]
   );
 
-  //fetch the user profile, top tracks and artists
+  //fetches the user profile, top tracks and artists if there is a token
   useEffect(
     function () {
       //only run the effect if there is a token
       if (token) {
-        getData(token, dispatch);
+        getProfileTopTracksAndArtists(token, dispatch);
       }
     },
     [token, dispatch]
@@ -47,18 +48,25 @@ function LandingPage() {
 
   return (
     <>
-      {/* if it is loading */}
-      {loading && !token ? <Spinner /> : null}
-      {token && tokenError ? <Page profile={profileData} /> : null}
+      {/* keep showing the spinner as long as the data is being fetched*/}
+      {loading && Object.keys(profileData).length <= 0 ? <Spinner /> : null}
 
-      {/* there is a token and no error */}
-      {token && !dataError && !tokenError ? (
+      {/*if we have fetched the data and there is no error*/}
+      {!loading &&
+      Object.keys(profileData).length > 0 &&
+      !dataError &&
+      !tokenError ? (
         <Page profile={profileData} />
       ) : null}
 
-      {/*if there is an error from the token fetch or data fetch */}
+      {/*if we have fetched the data and there is still an error for some reason, show the user interface*/}
+      {tokenError && Object.keys(profileData).length > 0 ? (
+        <Page profile={profileData} />
+      ) : null}
+
+      {/*if there is an error and there is no token, or  there is an error from the data fetch */}
       {(tokenError && !token) || dataError ? (
-        <BackToLogIn error={tokenError || dataError} />
+        <BackToLogIn errorMessage={tokenError || dataError} />
       ) : null}
     </>
   );
@@ -70,15 +78,18 @@ function Page({ profile }) {
   const sectionLeadRef = useRef(null);
   const sectionBtnsRef = useRef(null);
 
-  useEffect(function () {
-    const timeline = gsap.timeline({ defaults: { duration: 1 } });
+  let timeline = gsap.timeline({ defaults: { duration: 0.5 } });
 
-    timeline
-      .to(sectionRef.current, { display: "flex", opacity: 1, delay: 1 })
-      .to(sectionHeadRef.current, { opacity: 1 })
-      .to(sectionLeadRef.current, { opacity: 1 })
-      .to(sectionBtnsRef.current, { opacity: 1 });
-  }, []);
+  useEffect(
+    function () {
+      timeline
+        .to(sectionRef.current, { display: "flex", opacity: 1, delay: 1 })
+        .to(sectionHeadRef.current, { opacity: 1 })
+        .to(sectionLeadRef.current, { opacity: 1 })
+        .to(sectionBtnsRef.current, { opacity: 1 });
+    },
+    [timeline]
+  );
 
   return (
     <section className={styles.intro} ref={sectionRef}>
@@ -90,21 +101,16 @@ function Page({ profile }) {
       </p>
 
       <div ref={sectionBtnsRef} className={styles.introBtns}>
-        <Link
-          className={`${styles.introBtn} ${styles.introBtn1} btn-1`}
-          to={"/tracks"}
-        >
+        <Link className={`${styles.introBtn1}  btn-1`} to={"/tracksData"}>
           See Top Tracks
         </Link>
 
-        <Link
-          className={`${styles.introBtn} ${styles.introBtn2} btn-1`}
-          to={"/artists"}
-        >
+        <Link className={`${styles.introBtn1}  btn-1`} to={"/artistsData"}>
           See Top Artists
         </Link>
       </div>
     </section>
   );
 }
+
 export default LandingPage;

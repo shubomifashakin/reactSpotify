@@ -1,20 +1,13 @@
-function Error({ children }) {
-  return (
-    <section className="error-section">
-      {/* <h2 className="error-message">sample text</h2>
-      <div className="error-recommendations">
-        <h2 className="recommendations-header"></h2>
+import styles from "../CssModules/error.module.css";
+import { Button } from "./Button";
 
-        <div className="inner-recommendations">
-          <span className="recommendations"> </span>
-        </div>
+export function ErrorComponent({ message, failure = true, onClickFn }) {
+  return (
+    <>
+      <div className={styles.errorContainer}>
+        <p className={styles.notice}>{message}</p>
+        {failure ? <Button onClickFn={onClickFn}>Try Again</Button> : null}
       </div>
-      <a className="error-return" href="#returnToIntro">
-        Listen to some music and check back after some time.
-      </a> */}
-      {children}
-    </section>
+    </>
   );
 }
-
-export default Error;

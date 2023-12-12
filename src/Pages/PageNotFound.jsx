@@ -1,23 +1,22 @@
-import { useRef } from "react";
 import styles from "../CssModules/PageNotFound.module.css";
 
-import LottieAnimation from "../assets/Animation - 1702187590406.json";
 import Lottie from "lottie-react";
+import LottieAnimation from "../assets/errorConnection.json";
+import { Link } from "react-router-dom";
 
 function PageNotFound() {
-  const lottieRef = useRef(null);
-
   return (
     <section className={styles.container}>
       <Lottie
+        className={styles.animContainer}
         animationData={LottieAnimation}
         loop={true}
         renderer="svg"
         autoplay={true}
-        lottieRef={lottieRef}
-        onMouseEnter={() => lottieRef.current.pause()}
-        onMouseLeave={() => lottieRef.current.goToAndPlay(0, false)}
       />
+      <Link to={"/"} className={styles.logInLink}>
+        Please Go Back!
+      </Link>
     </section>
   );
 }

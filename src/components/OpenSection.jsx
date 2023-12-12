@@ -3,7 +3,7 @@ import styles from "../CssModules/openSection.module.css";
 import { UserData } from "./ContextProvider";
 import gsap from "gsap";
 
-function OpenSection({ label }) {
+export function OpenSection({ label }) {
   const { profileData } = useContext(UserData);
   const sectionRef = useRef(null);
   const header1Ref = useRef(null);
@@ -11,7 +11,7 @@ function OpenSection({ label }) {
   const header3Ref = useRef(null);
 
   useEffect(function () {
-    const timeline = gsap.timeline({ defaults: { duration: 1 } });
+    const timeline = gsap.timeline({ defaults: { duration: 0.5 } });
 
     timeline
       .to(header1Ref.current, {
@@ -54,5 +54,3 @@ function OpenSection({ label }) {
     </section>
   );
 }
-
-export default OpenSection;
