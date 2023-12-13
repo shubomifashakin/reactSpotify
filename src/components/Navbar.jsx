@@ -62,7 +62,7 @@ function Item({ label }) {
 
 function Right() {
   const navigate = useNavigate();
-  const { dispatch } = useContext(UserData);
+  const { dispatch, profileData: profile } = useContext(UserData);
 
   function LogOut() {
     //removes the token details used from the local storage
@@ -76,10 +76,10 @@ function Right() {
   return (
     <div className={styles.navRight}>
       <span className={`${styles.navItem} ${styles.navUser}`}>
-        <p className="nav-username">545plea</p>
+        <p className="nav-username">{profile.display_name.split(" ")[0]}</p>
       </span>
 
-      <span className={styles.navItem}>
+      <span className={`${styles.navItem} ${styles.navBtn}`}>
         <button className={`${styles.navLink} nav-log-out`} onClick={LogOut}>
           Log Out
         </button>
