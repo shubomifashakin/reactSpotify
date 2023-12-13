@@ -40,7 +40,7 @@ function Login() {
 
         //insert the search params into the code so they can be accessed in the landing page
         navigate(
-          `landing?code=${code}&client_id=${HELPERS.clientId}&grant_type=authorization_code&redirect_uri=http://localhost:5173/&code_verifier=${verifier}`
+          `landing?code=${code}&client_id=${HELPERS.clientId}&grant_type=authorization_code&redirect_uri=https://545listeningstatistics.netlify.app/&code_verifier=${verifier}`
         );
       }
     },
