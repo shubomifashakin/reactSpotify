@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { TopPageLayout } from "../components/TopPageLayout";
 import { OpenSection } from "../components/OpenSection";
 
-import styles from "../CssModules/Top1.module.css";
+import styles from "./Top1.module.css";
 
 export function Top1Page({ label }) {
   return (

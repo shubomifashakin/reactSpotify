@@ -5,7 +5,6 @@ import { Suspense, lazy } from "react";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { Spinner } from "./components/Spinner";
 
-import styles from "./CssModules/App.module.css";
 import { Top1Page } from "./Pages/Top1Page";
 import { Top20Page } from "./Pages/Top20Page";
 import { TopPage } from "./Pages/TopPage";
@@ -14,6 +13,8 @@ import { TopPage } from "./Pages/TopPage";
 const LandingPage = lazy(() => import("./Pages/LandingPage"));
 const LoginPage = lazy(() => import("./Pages/Login"));
 const PageNotFound = lazy(() => import("./Pages/PageNotFound"));
+
+import styles from "./App.module.css";
 
 export default function App() {
   return (

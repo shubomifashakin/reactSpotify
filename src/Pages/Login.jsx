@@ -5,7 +5,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { UserData } from "../components/ContextProvider";
 import { Button } from "../components/Button";
 
-import styles from "../CssModules/LogInPage.module.css";
+import styles from "./LogInPage.module.css";
 
 function Login() {
   //gets the dispatch function from the global context

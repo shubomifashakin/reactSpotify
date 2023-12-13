@@ -3,7 +3,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 import { UserData } from "./ContextProvider";
 
-import styles from "../CssModules/Navbar.module.css";
+import styles from "./Navbar.module.css";
 
 function Navbar({ label }) {
   const [searchParams, setSearchParams] = useSearchParams();

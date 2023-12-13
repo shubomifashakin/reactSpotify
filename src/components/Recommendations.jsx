@@ -5,7 +5,7 @@ import { Spinner } from "./Spinner";
 import { ErrorComponent } from "./Error";
 import { getSimilarForRecommendedPage } from "../Helpers/_actions";
 
-import styles from "../CssModules/Recommendations.module.css";
+import styles from "./Recommendations.module.css";
 
 const initialRecommendedState = {
   loading: false,

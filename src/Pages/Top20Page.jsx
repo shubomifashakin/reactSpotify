@@ -16,7 +16,7 @@ import { Spinner } from "../components/Spinner";
 import { UserData } from "../components/ContextProvider";
 import { ErrorComponent } from "../components/Error";
 
-import styles from "../CssModules/Top20.module.css";
+import styles from "./Top20.module.css";
 import gsap from "gsap";
 
 const FocusContext = createContext(null);

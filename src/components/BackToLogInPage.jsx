@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Lottie from "lottie-react";
 import LottieAnimation from "../assets/errorLottiee.json";
 
-import styles from "../CssModules/BackToLogInPage.module.css";
+import styles from "./BackToLogInPage.module.css";
 
 export function BackToLogIn({ errorMessage }) {
   return (

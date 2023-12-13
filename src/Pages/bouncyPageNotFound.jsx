@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
-import styles from "../CssModules/PageNotFound.module.css";
+import styles from "./PageNotFound.module.css";
 
 import gsap from "gsap";
 

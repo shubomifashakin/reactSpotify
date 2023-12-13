@@ -1,6 +1,7 @@
 import { memo } from "react";
-import styles from "../CssModules/Footer.module.css";
 import { useSearchParams } from "react-router-dom";
+
+import styles from "./Footer.module.css";
 
 export const Footer = memo(function Footer() {
   const [searchParams, setSearchParams] = useSearchParams();

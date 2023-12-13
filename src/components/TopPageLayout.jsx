@@ -1,7 +1,7 @@
 import Footer from "./Footer";
 import Navbar from "./Navbar";
 
-import styles from "../CssModules/TopContainer.module.css";
+import styles from "./TopContainer.module.css";
 
 export function TopPageLayout({ label, children }) {
   return (
