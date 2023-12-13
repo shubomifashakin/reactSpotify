@@ -7,7 +7,7 @@ import { Spinner } from "../components/Spinner";
 import { UserData } from "../components/ContextProvider";
 import { BackToLogIn } from "../components/BackToLogInPage";
 
-import styles from "../CssModules/landingpage.module.css";
+import styles from "../CssModules/LandingPage.module.css";
 import gsap from "gsap";
 
 function LandingPage() {

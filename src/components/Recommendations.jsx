@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
-import styles from "../CssModules/recommendations.module.css";
 import { useContext, useEffect, useReducer } from "react";
 import { UserData } from "./ContextProvider";
 import { Spinner } from "./Spinner";
 import { ErrorComponent } from "./Error";
 import { getSimilarForRecommendedPage } from "../Helpers/_actions";
+
+import styles from "../CssModules/Recommendations.module.css";
 
 const initialRecommendedState = {
   loading: false,

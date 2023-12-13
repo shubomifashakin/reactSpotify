@@ -1,4 +1,4 @@
-import styles from "../CssModules/error.module.css";
+import styles from "../CssModules/Error.module.css";
 import { Button } from "./Button";
 
 export function ErrorComponent({ message, failure = true, onClickFn }) {

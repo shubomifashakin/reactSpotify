@@ -1,8 +1,8 @@
-import styles from "../CssModules/PageNotFound.module.css";
-
 import Lottie from "lottie-react";
 import LottieAnimation from "../assets/errorConnection.json";
 import { Link } from "react-router-dom";
+
+import styles from "../CssModules/PageNotFound.module.css";
 
 function PageNotFound() {
   return (
