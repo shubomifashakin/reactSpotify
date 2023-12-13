@@ -23,3 +23,19 @@
     }
   }
 }
+
+@media only screen and (max-width: 650px) {
+  .openSection {
+    & > * {
+      color: var(--primary-color);
+      font-size: 2.5rem;
+      display: none;
+      opacity: 0;
+
+      & > * {
+        font-size: inherit;
+        color: inherit;
+      }
+    }
+  }
+}

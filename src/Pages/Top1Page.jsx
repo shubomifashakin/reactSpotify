@@ -2,9 +2,10 @@ import { useContext } from "react";
 import { UserData } from "../components/ContextProvider";
 import { Link } from "react-router-dom";
 
-import styles from "../CssModules/top1.module.css";
 import { TopPageLayout } from "../components/TopPageLayout";
 import { OpenSection } from "../components/OpenSection";
+
+import styles from "../CssModules/top1.module.css";
 
 export function Top1Page({ label }) {
   return (
@@ -93,6 +94,7 @@ function LinkToSongOrArtist({ label }) {
               ? tracksData.items[0].name
               : artistsData.items[0].name}
           </span>
+          &nbsp;
           <i className={`fa-brands fa-spotify ${styles.spotifyIcon}`}></i>
         </a>
       </h1>

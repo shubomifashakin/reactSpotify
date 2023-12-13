@@ -37,6 +37,7 @@
       flex-basis: 25%;
 
       .infoHead {
+        text-decoration: underline;
         text-transform: capitalize;
         font-size: 1rem;
         color: var(--dim-primary-color) !important;

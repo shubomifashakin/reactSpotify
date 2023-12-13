@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 import { getToken, getProfileTopTracksAndArtists } from "../Helpers/_actions";
 

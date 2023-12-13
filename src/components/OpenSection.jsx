@@ -1,6 +1,8 @@
 import { useContext, useEffect, useRef } from "react";
-import styles from "../CssModules/openSection.module.css";
 import { UserData } from "./ContextProvider";
+
+import styles from "../CssModules/openSection.module.css";
+
 import gsap from "gsap";
 
 export function OpenSection({ label }) {
