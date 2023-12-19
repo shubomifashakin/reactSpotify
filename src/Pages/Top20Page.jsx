@@ -13,11 +13,12 @@ import { useSearchParams } from "react-router-dom";
 import { TopPageLayout } from "../components/TopPageLayout";
 import { similarArtists, similarSongs } from "../Helpers/_actions";
 import { Spinner } from "../components/Spinner";
-import { UserData } from "../components/ContextProvider";
 import { ErrorComponent } from "../components/Error";
 
 import styles from "./Top20.module.css";
 import gsap from "gsap";
+import { dataStore } from "../Stores/DataStore";
+import { authStore } from "../Stores/AuthStore";
 
 const FocusContext = createContext(null);
 
@@ -80,8 +81,10 @@ const Focus = memo(function Focus() {
   //get the similarId and label from the context
   const { similarId, label } = useContext(FocusContext);
 
-  //get the token from the global context
-  const { token } = useContext(UserData);
+  //get the token from the AuthStore
+  const token = authStore(function (state) {
+    return state.token;
+  });
 
   //define the states
   const [{ loading, similarData, similarError }, dispatch] = useReducer(
@@ -228,8 +231,14 @@ function SimilarItem({ item }) {
 }
 
 const Main = memo(function Main() {
-  //get the data to be used from the global app context
-  const { tracksData, artistsData } = useContext(UserData);
+  //get the data to be used from the data store
+  const tracksData = dataStore(function (state) {
+    return state.tracksData;
+  });
+
+  const artistsData = dataStore(function (state) {
+    return state.artistsData;
+  });
 
   //get the label passed down from the Top20context
   const { label } = useContext(FocusContext);

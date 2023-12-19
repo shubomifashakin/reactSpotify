@@ -1,39 +1,41 @@
 import { Link } from "react-router-dom";
-import { useContext, useEffect, useReducer } from "react";
-import { UserData } from "./ContextProvider";
+import { useEffect } from "react";
 import { Spinner } from "./Spinner";
 import { ErrorComponent } from "./Error";
-import { getSimilarForRecommendedPage } from "../Helpers/_actions";
+
+import { authStore } from "../Stores/AuthStore";
+import { recommendationsStore } from "../Stores/RecommendationsStore";
 
 import styles from "./Recommendations.module.css";
 
-const initialRecommendedState = {
-  loading: false,
-  error: "",
-  recommendedTracks: "",
-};
-
-function recommendationsReducer(state, { label, payLoad }) {
-  if (label === "isLoading") return { ...state, loading: true, error: "" };
-  if (label === "fetched")
-    return { ...state, loading: false, recommendedTracks: payLoad };
-  if (label === "isError") return { ...state, loading: false, error: payLoad };
-}
-
 function Recommendations() {
-  const [{ loading, error, recommendedTracks }, dispatch] = useReducer(
-    recommendationsReducer,
-    initialRecommendedState
-  );
+  //get the token from the AuthStore
+  const token = authStore(function (state) {
+    return state.token;
+  });
 
-  const { token } = useContext(UserData);
+  const loading = recommendationsStore(function (state) {
+    return state.loading;
+  });
+
+  const error = recommendationsStore(function (state) {
+    return state.error;
+  });
+  //get the token form the AuthStore
+  const recommendedTracks = recommendationsStore(function (state) {
+    return state.recommendedTracks;
+  });
+
+  const fetchRecommended = recommendationsStore(function (state) {
+    return state.fetchRecommended;
+  });
 
   useEffect(
     function () {
       //only fetch the recommended tracks if there is a token
-      if (token) getSimilarForRecommendedPage(dispatch, token);
+      if (token) fetchRecommended(token);
     },
-    [token]
+    [token, fetchRecommended]
   );
 
   return (
@@ -50,7 +52,7 @@ function Recommendations() {
       {!loading && error ? (
         <ErrorComponent
           message={error}
-          onClickFn={() => getSimilarForRecommendedPage(dispatch, token)}
+          onClickFn={() => fetchRecommended(token)}
         ></ErrorComponent>
       ) : null}
     </>

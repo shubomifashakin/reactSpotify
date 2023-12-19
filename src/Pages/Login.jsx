@@ -1,15 +1,23 @@
 import * as HELPERS from "../Helpers/_helpers";
 import * as AUTH from "../Helpers/_auth";
-import { useContext, useEffect } from "react";
+
+import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { UserData } from "../components/ContextProvider";
+
+import { authStore } from "../Stores/AuthStore";
+
 import { Button } from "../components/Button";
 
 import styles from "./LogInPage.module.css";
 
 function Login() {
-  //gets the dispatch function from the global context
-  const { dispatch } = useContext(UserData);
+  const authorizeUser = authStore(function (state) {
+    return state.authorizeUser;
+  });
+
+  const setToken = authStore(function (state) {
+    return state.setToken;
+  });
 
   const [searchParams, setSearchParams] = useSearchParams();
   const code = searchParams.get("code");
@@ -35,32 +43,33 @@ function Login() {
         //get the verifier set by spotify from our local storage
         const verifier = localStorage.getItem("verifier");
 
-        //tell the context that we have been authorized and logged in
-        dispatch({ label: "authorized" });
+        //change the authorized state in the AuthStore to true
+        authorizeUser();
 
         //insert the search params into the code so they can be accessed in the landing page
         navigate(
-          `landing?code=${code}&client_id=${HELPERS.clientId}&grant_type=authorization_code&redirect_uri=https://545listeningstatistics.netlify.app/&code_verifier=${verifier}`
+          `landing?code=${code}&client_id=${HELPERS.clientId}&grant_type=authorization_code&redirect_uri=http://localhost:5173/&code_verifier=${verifier}`
         );
       }
     },
-    [code, navigate, dispatch]
+    [code, navigate, authorizeUser]
   );
 
   //if the user visits the logIn page and there is a token in the local storage that has not expired, then the user is still authorized
   useEffect(
     function () {
       if (loggedBeforeToken && !hasTokenExpired) {
-        //autorize user
-        dispatch({ label: "authorized" });
-        //send the token
-        dispatch({ label: "gotToken", payLoad: loggedBeforeToken });
+        //change the authorized state in the authstore to true
+        authorizeUser();
+
+        //set the token in the AuthStore
+        setToken(loggedBeforeToken);
 
         //go to the landing page
         navigate(`landing`);
       }
     },
-    [hasTokenExpired, dispatch, navigate, loggedBeforeToken]
+    [hasTokenExpired, setToken, navigate, loggedBeforeToken, authorizeUser]
   );
 
   return (

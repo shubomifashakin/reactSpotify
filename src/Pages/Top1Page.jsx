@@ -1,11 +1,10 @@
-import { useContext } from "react";
-import { UserData } from "../components/ContextProvider";
 import { Link } from "react-router-dom";
 
 import { TopPageLayout } from "../components/TopPageLayout";
 import { OpenSection } from "../components/OpenSection";
 
 import styles from "./Top1.module.css";
+import { dataStore } from "../Stores/DataStore";
 
 export function Top1Page({ label }) {
   return (
@@ -22,7 +21,14 @@ export function Top1Page({ label }) {
 }
 
 function Left({ label }) {
-  const { tracksData, artistsData } = useContext(UserData);
+  const tracksData = dataStore(function (state) {
+    return state.tracksData;
+  });
+
+  const artistsData = dataStore(function (state) {
+    return state.artistsData;
+  });
+
   return (
     <div className={styles.topLeft}>
       <img
@@ -38,7 +44,14 @@ function Left({ label }) {
 }
 
 function Right({ label }) {
-  const { tracksData, artistsData } = useContext(UserData);
+  const tracksData = dataStore(function (state) {
+    return state.tracksData;
+  });
+
+  const artistsData = dataStore(function (state) {
+    return state.artistsData;
+  });
+
   const info =
     label === "track"
       ? tracksData.items[0].artists[0].name
@@ -71,7 +84,13 @@ function Right({ label }) {
 }
 
 function LinkToSongOrArtist({ label }) {
-  const { tracksData, artistsData } = useContext(UserData);
+  const tracksData = dataStore(function (state) {
+    return state.tracksData;
+  });
+
+  const artistsData = dataStore(function (state) {
+    return state.artistsData;
+  });
 
   return (
     <div className={`${styles.trackInfo} ${styles.top1Main}`}>
@@ -103,7 +122,10 @@ function LinkToSongOrArtist({ label }) {
 }
 
 function FromDiv() {
-  const { tracksData } = useContext(UserData);
+  const tracksData = dataStore(function (state) {
+    return state.tracksData;
+  });
+
   return (
     <div className={`${styles.trackInfo} `}>
       <p className={`${styles.infoHead} `}>From</p>

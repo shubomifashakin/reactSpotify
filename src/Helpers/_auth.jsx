@@ -17,7 +17,7 @@ export async function redirectToAuthCodeFlow(clientId) {
   //add the client id to the search parameters
   params.append("client_id", clientId);
   params.append("response_type", "code");
-  params.append("redirect_uri", "https://545listeningstatistics.netlify.app/");
+  params.append("redirect_uri", "http://localhost:5173/");
   //these are the scopes we want to access
   params.append(
     "scope",

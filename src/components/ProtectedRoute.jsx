@@ -1,10 +1,14 @@
-import { useContext, useEffect } from "react";
-import { UserData } from "./ContextProvider";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { authStore } from "../Stores/AuthStore";
 
 function ProtectedRoute({ children }) {
-  const { authorized } = useContext(UserData);
+  const authorized = authStore(function (state) {
+    return state.authorized;
+  });
+
   const navigate = useNavigate();
+
   useEffect(function () {
     if (!authorized) navigate("/");
   });

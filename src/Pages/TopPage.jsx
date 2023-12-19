@@ -1,11 +1,15 @@
-import { useContext } from "react";
 import { Outlet } from "react-router-dom";
-
-import { UserData } from "../components/ContextProvider";
 import Recommendations from "../components/Recommendations";
+import { dataStore } from "../Stores/DataStore";
 
 export function TopPage({ label }) {
-  const { tracksData, artistsData } = useContext(UserData);
+  const tracksData = dataStore(function (state) {
+    return state.tracksData;
+  });
+
+  const artistsData = dataStore(function (state) {
+    return state.artistsData;
+  });
 
   return (
     <>

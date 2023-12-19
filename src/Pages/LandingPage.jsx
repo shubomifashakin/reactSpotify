@@ -1,25 +1,44 @@
-import { useContext, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
-import { getToken, getProfileTopTracksAndArtists } from "../Helpers/_actions";
-
 import { Spinner } from "../components/Spinner";
-import { UserData } from "../components/ContextProvider";
 import { BackToLogIn } from "../components/BackToLogInPage";
 
 import styles from "./LandingPage.module.css";
 import gsap from "gsap";
+import { authStore } from "../Stores/AuthStore";
+import { dataStore } from "../Stores/DataStore";
 
 function LandingPage() {
-  //receive the profile data from the context
-  const {
-    token,
-    tokenError,
-    loading,
-    profileData,
-    dispatch,
-    error: dataError,
-  } = useContext(UserData);
+  const fetchToken = authStore(function (state) {
+    return state.fetchToken;
+  });
+
+  const token = authStore(function (state) {
+    return state.token;
+  });
+
+  const tokenError = authStore(function (state) {
+    return state.error;
+  });
+  const loadingToken = authStore(function (state) {
+    return state.loading;
+  });
+
+  const loadingData = dataStore(function (state) {
+    return state.loading;
+  });
+
+  const profileData = dataStore(function (state) {
+    return state.profileData;
+  });
+
+  const dataError = dataStore(function (state) {
+    return state.error;
+  });
+  const fetchData = dataStore(function (state) {
+    return state.fetchData;
+  });
 
   //gets the params needed to be sent from the url
   const [searchParams, setSearchParams] = useSearchParams();
@@ -29,10 +48,10 @@ function LandingPage() {
     function () {
       //only run the effect if there is no token
       if (!token) {
-        getToken(dispatch, searchParams);
+        fetchToken(searchParams);
       }
     },
-    [searchParams, dispatch, token]
+    [searchParams, fetchToken, token]
   );
 
   //fetches the user profile, top tracks and artists if there is a token
@@ -40,33 +59,44 @@ function LandingPage() {
     function () {
       //only run the effect if there is a token
       if (token) {
-        getProfileTopTracksAndArtists(token, dispatch);
+        fetchData(token);
       }
     },
-    [token, dispatch]
+    [token, fetchData]
   );
 
   return (
     <>
       {/* keep showing the spinner as long as the data is being fetched*/}
-      {loading && Object.keys(profileData).length <= 0 ? <Spinner /> : null}
+      {loadingToken || loadingData ? <Spinner /> : null}
 
       {/*if we have fetched the data and there is no error*/}
-      {!loading &&
+      {!loadingToken &&
+      !loadingData &&
       Object.keys(profileData).length > 0 &&
       !dataError &&
       !tokenError ? (
         <Page profile={profileData} />
       ) : null}
 
-      {/*if we have fetched the data and there is still an error for some reason, show the user interface*/}
+      {/*if we have fetched the data and there is still an error for some reason, still use the data*/}
       {tokenError && Object.keys(profileData).length > 0 ? (
         <Page profile={profileData} />
       ) : null}
 
       {/*if there is an error and there is no token, or  there is an error from the data fetch */}
-      {(tokenError && !token) || dataError ? (
+      {(tokenError && !token && !loadingToken) ||
+      (dataError && !loadingData) ? (
         <BackToLogIn errorMessage={tokenError || dataError} />
+      ) : null}
+
+      {/*when the component first mounts before useeffect is run*/}
+      {!loadingData &&
+      !tokenError &&
+      !loadingToken &&
+      !dataError &&
+      Object.keys(profileData).length <= 0 ? (
+        <p>loading</p>
       ) : null}
     </>
   );
