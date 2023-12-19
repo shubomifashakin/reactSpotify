@@ -1,12 +1,17 @@
-import { useContext, useEffect, useRef } from "react";
-import { UserData } from "./ContextProvider";
+import { useEffect, useRef } from "react";
+
+import { dataStore } from "../Stores/DataStore";
 
 import styles from "./OpenSection.module.css";
 
 import gsap from "gsap";
 
 export function OpenSection({ label }) {
-  const { profileData } = useContext(UserData);
+  //gets the profileData from the dataStore
+  const profileData = dataStore(function (state) {
+    return state.profileData;
+  });
+
   const sectionRef = useRef(null);
   const header1Ref = useRef(null);
   const header2Ref = useRef(null);

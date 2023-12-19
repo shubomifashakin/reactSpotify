@@ -55,5 +55,11 @@ export const authStore = create(function (set) {
         set({ error: err.message, loading: false });
       }
     },
+
+    logOut: function () {
+      localStorage.removeItem("timeReceivedToken");
+      localStorage.removeItem("token");
+      set(initialState);
+    },
   };
 });

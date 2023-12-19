@@ -1,8 +1,3 @@
-import { useSearchParams } from "react-router-dom";
-import * as HELPERS from "./_helpers";
-import { useContext, useEffect, useReducer } from "react";
-import { UserData } from "../components/ContextProvider";
-
 export async function redirectToAuthCodeFlow(clientId) {
   //this generates a verifier
   const verifier = generateCodeVerifier(128);
@@ -59,51 +54,4 @@ async function generateCodeChallenge(codeVerifier) {
     .replace(/\+/g, "-")
     .replace(/\//g, "_")
     .replace(/=+$/, "");
-}
-
-export function useToken(clientId, code) {
-  //gets the token state and dispatch
-  const { token, dispatch } = useContext(UserData);
-
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  useEffect(
-    function () {
-      async function getToken() {
-        try {
-          //when dispatched, the landing page would re-render and start showing the spinner component
-          dispatch({ label: "isLoading" });
-          //send the data to the api
-          const result = await Promise.race([
-            fetch("https://accounts.spotify.com/api/token", {
-              method: "POST",
-              headers: { "Content-Type": "application/x-www-form-urlencoded" },
-              body: searchParams,
-            }),
-            HELPERS.timer(),
-          ]);
-
-          //if there is an error short circuit
-          if (!result.ok) {
-            throw new Error(`An error occurred ${result.status} token`);
-          }
-
-          //the access token is returned from the api
-          const { access_token } = await result.json();
-
-          //send the token to the context provider state
-          dispatch({ label: "gotToken", payLoad: access_token });
-        } catch (err) {
-          //send the error to the error to the state and show the error section in landing page
-          dispatch({ label: "tokenError", payLoad: err.message });
-        }
-      }
-
-      //only run the effect if there is no token
-      if (!token) {
-        getToken();
-      }
-    },
-    [searchParams, setSearchParams, dispatch, token]
-  );
 }

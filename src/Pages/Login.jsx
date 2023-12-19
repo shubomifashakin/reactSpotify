@@ -11,12 +11,9 @@ import { Button } from "../components/Button";
 import styles from "./LogInPage.module.css";
 
 function Login() {
-  const authorizeUser = authStore(function (state) {
-    return state.authorizeUser;
-  });
-
-  const setToken = authStore(function (state) {
-    return state.setToken;
+  //gets the actions from the AuthStore
+  const { authorizeUser, setToken } = authStore(function (state) {
+    return state;
   });
 
   const [searchParams, setSearchParams] = useSearchParams();

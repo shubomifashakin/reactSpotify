@@ -10,34 +10,22 @@ import { authStore } from "../Stores/AuthStore";
 import { dataStore } from "../Stores/DataStore";
 
 function LandingPage() {
-  const fetchToken = authStore(function (state) {
-    return state.fetchToken;
+  const {
+    fetchToken,
+    token,
+    error: tokenError,
+    loading: loadingToken,
+  } = authStore(function (state) {
+    return state;
   });
 
-  const token = authStore(function (state) {
-    return state.token;
-  });
-
-  const tokenError = authStore(function (state) {
-    return state.error;
-  });
-  const loadingToken = authStore(function (state) {
-    return state.loading;
-  });
-
-  const loadingData = dataStore(function (state) {
-    return state.loading;
-  });
-
-  const profileData = dataStore(function (state) {
-    return state.profileData;
-  });
-
-  const dataError = dataStore(function (state) {
-    return state.error;
-  });
-  const fetchData = dataStore(function (state) {
-    return state.fetchData;
+  const {
+    error: dataError,
+    fetchData,
+    profileData,
+    loading: loadingData,
+  } = dataStore(function (state) {
+    return state;
   });
 
   //gets the params needed to be sent from the url

@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 
+import { dataStore } from "../Stores/DataStore";
+
 import { TopPageLayout } from "../components/TopPageLayout";
 import { OpenSection } from "../components/OpenSection";
 
 import styles from "./Top1.module.css";
-import { dataStore } from "../Stores/DataStore";
 
 export function Top1Page({ label }) {
   return (
@@ -21,12 +22,9 @@ export function Top1Page({ label }) {
 }
 
 function Left({ label }) {
-  const tracksData = dataStore(function (state) {
-    return state.tracksData;
-  });
-
-  const artistsData = dataStore(function (state) {
-    return state.artistsData;
+  //get the tracks & artists data from the dataStore
+  const { tracksData, artistsData } = dataStore(function (state) {
+    return state;
   });
 
   return (
@@ -44,12 +42,9 @@ function Left({ label }) {
 }
 
 function Right({ label }) {
-  const tracksData = dataStore(function (state) {
-    return state.tracksData;
-  });
-
-  const artistsData = dataStore(function (state) {
-    return state.artistsData;
+  //get the tracks & artists data from the dataStore
+  const { tracksData, artistsData } = dataStore(function (state) {
+    return state;
   });
 
   const info =
@@ -84,12 +79,9 @@ function Right({ label }) {
 }
 
 function LinkToSongOrArtist({ label }) {
-  const tracksData = dataStore(function (state) {
-    return state.tracksData;
-  });
-
-  const artistsData = dataStore(function (state) {
-    return state.artistsData;
+  //get the tracks & artists data from the dataStore
+  const { tracksData, artistsData } = dataStore(function (state) {
+    return state;
   });
 
   return (
@@ -122,6 +114,7 @@ function LinkToSongOrArtist({ label }) {
 }
 
 function FromDiv() {
+  //get tracksData from the dataStore
   const tracksData = dataStore(function (state) {
     return state.tracksData;
   });

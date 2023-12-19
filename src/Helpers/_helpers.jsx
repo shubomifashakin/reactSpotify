@@ -9,11 +9,6 @@ export function timer() {
 //this is my client id
 export const clientId = import.meta.env.VITE_CLIENT_ID;
 export const clientSecret = import.meta.env.VITE_CLIENT_SECRET;
-//this gets all the parameters in our url
-export const params = new URLSearchParams(window.location.search);
-//this gets the value of the code parameter in our url
-export const code = params.get("code");
-export const logged = localStorage.getItem("logged");
 
 //this is our default time frame for every search
 export const timeFrame = "short_term";

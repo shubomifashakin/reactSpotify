@@ -1,9 +1,8 @@
-import { useContext } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
-import { UserData } from "./ContextProvider";
-
 import styles from "./Navbar.module.css";
+import { dataStore } from "../Stores/DataStore";
+import { authStore } from "../Stores/AuthStore";
 
 function Navbar({ label }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -12,6 +11,7 @@ function Navbar({ label }) {
   function clearSearchParams(e) {
     setSearchParams();
   }
+
   return (
     <nav className={styles.navbar} onClick={clearSearchParams}>
       <Left label={label} />
@@ -62,14 +62,24 @@ function Item({ label }) {
 
 function Right() {
   const navigate = useNavigate();
-  const { dispatch, profileData: profile } = useContext(UserData);
 
-  function LogOut() {
+  const profile = dataStore(function (state) {
+    return state.profileData;
+  });
+
+  //gets the logOutAction from the AuthStore
+  const logOutAction = authStore(function (state) {
+    return state.logOut;
+  });
+
+  function handleLogOut() {
     //removes the token details used from the local storage
     localStorage.removeItem("token");
     localStorage.removeItem("timeReceivedToken");
 
-    dispatch({ label: "logOut" });
+    logOutAction();
+
+    //go back to the index page
     navigate("/");
   }
 
@@ -80,7 +90,10 @@ function Right() {
       </span>
 
       <span className={`${styles.navItem} ${styles.navBtn}`}>
-        <button className={`${styles.navLink} nav-log-out`} onClick={LogOut}>
+        <button
+          className={`${styles.navLink} nav-log-out`}
+          onClick={handleLogOut}
+        >
           Log Out
         </button>
       </span>
