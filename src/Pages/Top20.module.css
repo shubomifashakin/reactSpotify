@@ -172,7 +172,6 @@
         background-color: var(--hover-color);
         transition: linear 0.5s;
         cursor: pointer;
-        opacity: 0;
 
         &:hover {
           background-color: var(--primary-color);

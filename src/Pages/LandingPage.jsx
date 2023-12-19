@@ -4,10 +4,11 @@ import { Link, useSearchParams } from "react-router-dom";
 import { Spinner } from "../components/Spinner";
 import { BackToLogIn } from "../components/BackToLogInPage";
 
-import styles from "./LandingPage.module.css";
-import gsap from "gsap";
 import { authStore } from "../Stores/AuthStore";
 import { dataStore } from "../Stores/DataStore";
+
+import styles from "./LandingPage.module.css";
+import gsap from "gsap";
 
 function LandingPage() {
   const {
@@ -55,10 +56,10 @@ function LandingPage() {
 
   return (
     <>
-      {/* keep showing the spinner as long as the data is being fetched*/}
+      {/* show the spinner as long as the data or token is being fetched*/}
       {loadingToken || loadingData ? <Spinner /> : null}
 
-      {/*if we have fetched the data and there is no error*/}
+      {/* if we have fetched the data and there is no error */}
       {!loadingToken &&
       !loadingData &&
       Object.keys(profileData).length > 0 &&
@@ -67,14 +68,17 @@ function LandingPage() {
         <Page profile={profileData} />
       ) : null}
 
-      {/*if we have fetched the data and there is still an error for some reason, still use the data*/}
-      {tokenError && Object.keys(profileData).length > 0 ? (
+      {/*if we have fetched the data and there is still an error for some reason, ignore the error and use the data fetched */}
+      {!loadingToken &&
+      !loadingData &&
+      Object.keys(profileData).length > 0 &&
+      tokenError ? (
         <Page profile={profileData} />
       ) : null}
 
-      {/*if there is an error and there is no token, or  there is an error from the data fetch */}
-      {(tokenError && !token && !loadingToken) ||
-      (dataError && !loadingData) ? (
+      {/* if there is an error, there is no token and the data has not been fetched or there is an error from the data fetch */}
+      {(tokenError && !token && Object.keys(profileData).length <= 0) ||
+      dataError ? (
         <BackToLogIn errorMessage={tokenError || dataError} />
       ) : null}
 
@@ -84,7 +88,7 @@ function LandingPage() {
       !loadingToken &&
       !dataError &&
       Object.keys(profileData).length <= 0 ? (
-        <p>loading</p>
+        <p>Please Wait...</p>
       ) : null}
     </>
   );

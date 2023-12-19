@@ -1,45 +1,53 @@
-import {
-  createContext,
-  memo,
-  useContext,
-  useEffect,
-  useMemo,
-  useReducer,
-  useRef,
-  useState,
-} from "react";
+import { memo, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { TopPageLayout } from "../components/TopPageLayout";
-import { similarArtists, similarSongs } from "../Helpers/_actions";
 import { Spinner } from "../components/Spinner";
 import { ErrorComponent } from "../components/Error";
 
-import styles from "./Top20.module.css";
-import gsap from "gsap";
 import { dataStore } from "../Stores/DataStore";
 import { authStore } from "../Stores/AuthStore";
+import { focusStore } from "../Stores/FocusStore";
 
-const FocusContext = createContext(null);
+import styles from "./Top20.module.css";
+import gsap from "gsap";
 
 export function Top20Page({ label }) {
+  //when we click the item , the search params would change, causing the component to re-render
   const [searchParams, setSearchParams] = useSearchParams();
+
   //similarId would be empty when the page first renders
   const similarId = searchParams.get("id");
-  const [focusItem, setFocusClickedItem] = useState("");
 
-  //pass these values to the context
-  //all components using the context would only re-render when any value in the context changes
-  const values = useMemo(() => {
-    return {
-      similarId,
-      label,
-      setSearchParams,
-      searchParams,
-      focusItem,
-      setFocusClickedItem,
-    };
-  }, [similarId, label, setSearchParams, searchParams, focusItem]);
+  const { setSimilarId, setLabel, resetSimilarData } = focusStore(function (
+    state
+  ) {
+    return state;
+  });
+
+  //on mount it sets the similarId state in the focusStore and when the similar id changes
+  useEffect(
+    function () {
+      setSimilarId(similarId);
+    },
+    [similarId, setSimilarId]
+  );
+
+  //on mount, it sets the labelState in the focusStore
+  useEffect(
+    function () {
+      setLabel(label);
+    },
+    [setLabel, label]
+  );
+
+  //on mount, it clears the similarData state in the focusStore
+  useEffect(
+    function () {
+      resetSimilarData();
+    },
+    [resetSimilarData]
+  );
 
   //when anywhere that is not a top item in the section is clicked, the searchParams would clear and the focus container would close
   function clearSearchParams() {
@@ -48,58 +56,45 @@ export function Top20Page({ label }) {
 
   return (
     <TopPageLayout label={label}>
-      <FocusContext.Provider value={values}>
-        <section className={styles.top20} onClick={clearSearchParams}>
-          <div className={styles.top20Inner}>
-            {/*Focus section would not render when the Page first mounts because there is no similarId */}
-            {similarId ? <Focus /> : null}
-            <Main />
-          </div>
-        </section>
-      </FocusContext.Provider>
+      <section className={styles.top20} onClick={clearSearchParams}>
+        <div className={styles.top20Inner}>
+          {/*Focus section would not render when the Page first mounts because there is no similarId */}
+          {similarId ? <Focus /> : null}
+          <Main />
+        </div>
+      </section>
     </TopPageLayout>
   );
 }
 
-const initialFocusState = {
-  loading: false,
-  similarData: "",
-  similarError: "",
-};
-
-function focusReducer(state, { payLoad, label }) {
-  if (label === "isError")
-    return { ...state, loading: false, similarError: payLoad };
-  if (label === "fetched")
-    return { ...state, loading: false, similarData: payLoad, similarError: "" };
-  if (label === "isLoading")
-    return { ...state, loading: true, similarError: "" };
-  if (label === "clearSimilar") return { ...state, similarData: "" };
-}
-
-const Focus = memo(function Focus() {
-  //get the similarId and label from the context
-  const { similarId, label } = useContext(FocusContext);
-
+const Focus = function Focus() {
   //get the token from the AuthStore
   const token = authStore(function (state) {
     return state.token;
   });
 
-  //define the states
-  const [{ loading, similarData, similarError }, dispatch] = useReducer(
-    focusReducer,
-    initialFocusState
-  );
+  //get the states from the focusStore
+  const {
+    label,
+    loading,
+    error: similarError,
+    getSimilarSongs,
+    getSimilarArtists,
+    similarData,
+    similarId,
+  } = focusStore(function (state) {
+    return state;
+  });
 
-  //if we are on the track page use the similarSongs function else use the similarArtists function
-  const similarFunction = label === "track" ? similarSongs : similarArtists;
+  //if we are on the track page use the getSimilarSongs function else use the getSimilarArtists function
+  const similarFunction =
+    label === "track" ? getSimilarSongs : getSimilarArtists;
 
-  //run the effect only if there is an id
+  //fetch the similarData
   useEffect(
     function () {
       if (similarId) {
-        similarFunction(token, similarId, dispatch);
+        similarFunction(token, similarId);
       }
     },
     [token, similarId, similarFunction]
@@ -114,35 +109,38 @@ const Focus = memo(function Focus() {
       {loading ? <Spinner /> : null}
 
       {/*if it has finished loading and we have similar data */}
-      {!loading && similarData && !similarError ? (
+      {!loading && Object.keys(similarData).length > 0 && !similarError ? (
         <>
           <TrackOrArtistImage />
           <Details>
             <Detail />
           </Details>
 
-          <FocusSimilar similarData={similarData} />
+          <FocusSimilar />
         </>
       ) : null}
 
       {/*when the focus first mounts before the useEffect runs */}
-      {!loading && !similarData && !similarError ? (
-        <ErrorComponent failure={false} message={"Fetching Data"} />
+      {!loading && Object.keys(similarData).length < 0 && !similarError ? (
+        <ErrorComponent failure={false} message={"Please wait"} />
       ) : null}
 
       {/*when there is an error */}
       {!loading && similarError ? (
         <ErrorComponent
           message={similarError}
-          onClickFn={() => similarFunction(token, similarId, dispatch)}
+          onClickFn={() => similarFunction(token, similarId)}
         />
       ) : null}
     </div>
   );
-});
+};
 
 function TrackOrArtistImage() {
-  const { focusItem: item } = useContext(FocusContext);
+  //get the info of the item we clicked from the focusStore
+  const item = focusStore(function (state) {
+    return state.focusItem;
+  });
 
   return (
     <>
@@ -161,8 +159,10 @@ function Details({ children }) {
 }
 
 const Detail = memo(function Detail() {
-  //get the label and clicked item from context
-  const { label, focusItem: item } = useContext(FocusContext);
+  //get the label and the info of the item we clicked from focusStore
+  const { label, focusItem: item } = focusStore(function (state) {
+    return state;
+  });
 
   return (
     <>
@@ -183,8 +183,10 @@ const Detail = memo(function Detail() {
   );
 });
 
-const FocusSimilar = memo(function FocusSimilar({ similarData }) {
-  const { label } = useContext(FocusContext);
+const FocusSimilar = memo(function FocusSimilar() {
+  const label = focusStore(function (state) {
+    return state.label;
+  });
 
   return (
     <div className={styles.focusSimilar}>
@@ -192,14 +194,17 @@ const FocusSimilar = memo(function FocusSimilar({ similarData }) {
         Similar <span>{label}s</span>
       </p>
 
-      <SimilarTracksOrArtistsContainer similarData={similarData} />
+      <SimilarTracksOrArtistsContainer />
     </div>
   );
 });
 
-function SimilarTracksOrArtistsContainer({ similarData }) {
-  const { label } = useContext(FocusContext);
+function SimilarTracksOrArtistsContainer() {
+  const { label, similarData } = focusStore(function (state) {
+    return state;
+  });
 
+  console.log(label, similarData);
   //if we are on the tracks page, the similar data is for the tracks and vice versa
   const similarDataBasedOnCurrentPage =
     label === "track" ? similarData.tracks : similarData.artists;
@@ -232,23 +237,34 @@ function SimilarItem({ item }) {
 
 const Main = memo(function Main() {
   //get the data to be used from the data store
-  const tracksData = dataStore(function (state) {
-    return state.tracksData;
+  const { tracksData, artistsData } = dataStore(function (state) {
+    return state;
   });
 
-  const artistsData = dataStore(function (state) {
-    return state.artistsData;
+  //get the label from the focusStore
+  const label = focusStore(function (state) {
+    return state.label;
   });
-
-  //get the label passed down from the Top20context
-  const { label } = useContext(FocusContext);
 
   //if we clicked the see more button from the top tracks page, get the top tracks array else, get the top artists array
   const top20Data = label === "track" ? tracksData.items : artistsData.items;
 
+  const colRef = useRef(null);
+
+  useEffect(function () {
+    //show the focus section
+    const timeline = gsap.timeline({ defaults: { duration: 1 } });
+
+    timeline.fromTo(
+      colRef.current.children,
+      { opacity: 0 },
+      { opacity: 1, stagger: 0.65 }
+    );
+  }, []);
+
   return (
     //we pass only 4 array items each since we have 5 columns
-    <div className={styles.top20Main}>
+    <div ref={colRef} className={styles.top20Main}>
       <Cols data={top20Data.slice(0, 4)} iterator={1} />
 
       <Cols data={top20Data.slice(4, 8)} border={true} iterator={5} />
@@ -263,21 +279,9 @@ const Main = memo(function Main() {
 });
 
 function Cols({ data, iterator, border = false }) {
-  const colRef = useRef(null);
-
-  useEffect(function () {
-    //show the focus section
-    const timeline = gsap.timeline({ defaults: { duration: 1 } });
-
-    timeline.to(colRef.current.childNodes, { opacity: 1, stagger: 0.65 });
-  }, []);
-
   return (
     //cols with a border receive a special style
-    <div
-      ref={colRef}
-      className={`${styles.col} ${border ? styles.bordered : ""}`}
-    >
+    <div className={`${styles.col} ${border ? styles.bordered : ""}`}>
       {/* here the index(i) starts from 0,  we add the iterator to the index to continue from where we stopped in our labeling */}
       {data.map((info, i) => (
         <Item key={i} info={info} index={i + iterator} />
@@ -287,14 +291,18 @@ function Cols({ data, iterator, border = false }) {
 }
 
 const Item = memo(function Item({ info, index }) {
-  const { setSearchParams, setFocusClickedItem, focusItem } =
-    useContext(FocusContext);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  //when the user clicks an item, set the focusClicked state to the track/artist data we clicked & add the id of that track/artist to the search params
+  //gets the item clicked from the state and the action to set the value of the item clicked in the state
+  const { setFocusItem, focusItem } = focusStore(function (state) {
+    return state;
+  });
+
+  //when the user clicks an item, set the focusItem state to the track/artist data we clicked & add the id of that track/artist to the search params
   function triggerFocus(e, id, info) {
     e.stopPropagation();
     //if the current focus item is the same as the one that was clicked, remove the focusItem and remove the searchParams
-    focusItem === info ? setFocusClickedItem("") : setFocusClickedItem(info);
+    focusItem === info ? setFocusItem("") : setFocusItem(info);
     focusItem === info ? setSearchParams({}) : setSearchParams({ id });
   }
 
@@ -313,7 +321,10 @@ const Item = memo(function Item({ info, index }) {
 });
 
 const ItemImage = memo(function ItemImage({ info }) {
-  const { label } = useContext(FocusContext);
+  const label = focusStore(function (state) {
+    return state.label;
+  });
+
   return (
     <div className={styles.topImageContainer}>
       <img
@@ -325,7 +336,10 @@ const ItemImage = memo(function ItemImage({ info }) {
 });
 
 function ItemDetails({ info, index }) {
-  const { label } = useContext(FocusContext);
+  const label = focusStore(function (state) {
+    return state.label;
+  });
+
   return (
     <div className={styles.topItemDetails}>
       <span className={styles.detail}>
