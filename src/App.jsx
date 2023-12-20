@@ -43,22 +43,8 @@ export default function App() {
               {/*immmediately the user goes to the tracksData page, redirect to the topTrack route */}
               <Route index element={<Navigate replace to="topTrack" />} />
 
-              <Route
-                path="topTrack"
-                element={
-                  <ProtectedRoute>
-                    <Top1Page label={"track"} />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="allTracks"
-                element={
-                  <ProtectedRoute>
-                    <Top20Page label={"track"} />
-                  </ProtectedRoute>
-                }
-              />
+              <Route path="topTrack" element={<Top1Page label={"track"} />} />
+              <Route path="allTracks" element={<Top20Page label={"track"} />} />
             </Route>
 
             <Route
@@ -74,20 +60,12 @@ export default function App() {
 
               <Route
                 path="topArtists"
-                element={
-                  <ProtectedRoute>
-                    <Top1Page label={"artist"} />
-                  </ProtectedRoute>
-                }
+                element={<Top1Page label={"artist"} />}
               />
 
               <Route
                 path="allArtists"
-                element={
-                  <ProtectedRoute>
-                    <Top20Page label={"artist"} />
-                  </ProtectedRoute>
-                }
+                element={<Top20Page label={"artist"} />}
               />
             </Route>
 
