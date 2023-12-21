@@ -3,13 +3,20 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import styles from "./Navbar.module.css";
 import { dataStore } from "../Stores/DataStore";
 import { authStore } from "../Stores/AuthStore";
+import { focusStore } from "../Stores/FocusStore";
 
 function Navbar({ label }) {
   const [searchParams, setSearchParams] = useSearchParams();
 
+  //gets the action to set the value of the item clicked in the state
+  const setFocusItem = focusStore(function (state) {
+    return state.setFocusItem;
+  });
+
   //when anywhere that is not a top item in the section is clicked, the searchParams would clear and the focus container would close
   function clearSearchParams(e) {
     setSearchParams();
+    setFocusItem("");
   }
 
   return (

@@ -204,10 +204,11 @@ function SimilarTracksOrArtistsContainer() {
     return state;
   });
 
-  console.log(label, similarData);
   //if we are on the tracks page, the similar data is for the tracks and vice versa
   const similarDataBasedOnCurrentPage =
-    label === "track" ? similarData.tracks : similarData.artists;
+    label === "track"
+      ? similarData.tracks.slice(0, 7)
+      : similarData.artists.slice(0, 7);
 
   return (
     <span className={styles.focusSimilarInner}>
@@ -228,6 +229,7 @@ function SimilarItem({ item }) {
       className={styles.similarData}
     >
       <img
+        loading="lazy"
         src={item.images ? item?.images[0].url : item.album.images[1].url}
         className={styles.similarImage}
       />
